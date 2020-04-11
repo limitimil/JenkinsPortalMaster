@@ -11,7 +11,7 @@ import os
 import logging
 import logging.config
 
-from jira_services.comments_appender import append_ci_reference
+from jira_services.comments_appender import *
 
 _PATH = os.path.dirname(os.path.abspath(__file__))
 _PATH = os.path.join(_PATH, 'logging.ini')
@@ -27,6 +27,13 @@ CORS(app)
 @app.route('/append_comment/ci_reference', methods=['PUT'])
 def ci_reference():
     append_ci_reference(** request.json)
+    return 'OK', 200
+
+@app.route('/append_comment/<title>', methods=['PUT'])
+def append_comment_with_link(title):
+    params = request.json
+    params.update({'customized_title': title})
+    append_url_references(** params)
     return 'OK', 200
 
 
