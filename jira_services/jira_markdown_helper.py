@@ -7,11 +7,11 @@ class JiraMarkdownHelper:
         pattern2 = '^\*\* .*'
         title_presented = False
         for index, line in enumerate(self.raw_markdown.split('\n')):
-            if title_presented and not re.match(pattern1, line):
+            if title_presented and not re.match(pattern2, line):
                 return index
             if re.match(pattern1, line):
                 title_presented = True
-        return None
+        return len(self.raw_markdown.split('\n')) if title_presented else None
     def insert_content(self, content, insert_line=-1):
         fragments = self.raw_markdown.split('\n')
         return '\n'.join(fragments[:insert_line] + [content] + fragments[insert_line:])
