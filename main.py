@@ -12,6 +12,7 @@ import logging
 import logging.config
 
 from jira_services.comments_appender import *
+from socketio.core import helloworld
 
 _PATH = os.path.dirname(os.path.abspath(__file__))
 _PATH = os.path.join(_PATH, 'logging.ini')
@@ -35,6 +36,12 @@ def append_comment_with_link(title):
     params.update({'customized_title': title})
     append_url_references(** params)
     return 'OK', 200
+
+@app.route('/hello/socketio/', methods=['GET'])
+def hello_socketio():
+    helloworld()
+    return 'You should wait for hello from soket io', 200
+
 
 
 @app.errorhandler(Exception)
