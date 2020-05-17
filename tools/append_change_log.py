@@ -20,6 +20,11 @@ def main(issue_key, from_commit_id, to_commit_id='HEAD'):
         ),
             json= payload)
     assert response.status_code == 200
+    print("Summary:")
+    print("*"* 20)
+    print("Jira Issue: {}".format(issue_key))
+    print("*"* 20)
+    print("\n".join([' '.join(elems) for elems in change_logs]))
     return
 
 
