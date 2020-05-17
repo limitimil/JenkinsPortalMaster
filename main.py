@@ -24,6 +24,13 @@ app = Flask(__name__)
 app.config['CORS_EXPOSE_HEADERS'] = 'Content-Disposition'
 CORS(app)
 
+@app.route('/append_comment/change_log', methods=['PUT'])
+def change_log():
+    params = request.json
+    append_change_log( ** params)
+    return 'OK', 200
+    
+
 @app.route('/append_comment/ci_reference', methods=['PUT'])
 def ci_reference():
     append_ci_reference(** request.json)
