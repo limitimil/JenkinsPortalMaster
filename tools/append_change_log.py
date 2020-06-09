@@ -5,7 +5,7 @@ from git import Repo
 from itertools import compress
 TRIM_COMMIT_HEX= 8
 MAX_COMMIT_TRACE_BACK = 20
-API_BASE_URL= "http://192.168.107.135:9002/"
+API_BASE_URL= "http://192.168.107.135:9002"
 API_PATH= "append_comment/change_log"
 @click.command()
 @click.option('-i', '--issue-key', 'issue_key', required=True)
