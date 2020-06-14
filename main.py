@@ -36,6 +36,15 @@ def ci_reference():
     append_ci_reference(** request.json)
     return 'OK', 200
 
+@app.route('/append_comment/CI', methods=['PUT'])
+def append_ci_with_link():
+    params = request.json
+    params.update({'customized_title': 'CI'})
+    ca = CommentAppender(params['issue_key'])
+    ca.aggregate_by_title(params['customized_title'])
+    ca.append_url_references(params['reference_url'], params['customized_title'])
+    return 'OK', 200
+
 @app.route('/append_comment/<title>', methods=['PUT'])
 def append_comment_with_link(title):
     params = request.json
