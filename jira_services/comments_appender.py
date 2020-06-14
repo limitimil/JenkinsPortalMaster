@@ -29,6 +29,8 @@ def append_change_log(issue_key, change_logs: list):
     last_comment = issue.fields.comment.comments[-1]
     raw_markdown = last_comment.body
     jmh = JiraMarkdownHelper(raw_markdown)
+    raw_markdown = jmh.squash_content(title)
+    jmh = JiraMarkdownHelper(raw_markdown)
     insert_point = jmh.get_insert_point(title)
 
     raw_change_logs = ""
