@@ -42,15 +42,15 @@ def get_change_logs(from_commit_id, to_commit_id):
         if not result:
             if to_commit_id == 'HEAD' or c.hexsha.startswith(to_commit_id):
                 result.append((c.hexsha[:TRIM_COMMIT_HEX], trim_first_line(c.message)))
-            continue
-        result.append((c.hexsha[:TRIM_COMMIT_HEX], trim_first_line(c.message)))
+        else:
+            result.append((c.hexsha[:TRIM_COMMIT_HEX], trim_first_line(c.message)))
         if c.hexsha.startswith(from_commit_id):
             break
     assert len(result) > 0
     return result
 
 
-def trim_first_line(lines: str):
+def trim_first_line(lines :str):
     return lines.split('\n')[0]
 
 if __name__ == '__main__':
