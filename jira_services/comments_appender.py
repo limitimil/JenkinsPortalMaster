@@ -66,6 +66,6 @@ class CommentAppender(JiraMarkdownHelper):
     def new_url_references(self, reference_url, customized_title):
         jira.add_comment(self.issue, '* *{title}:*\n** [{url}|{url}] '.format(title=customized_title,url=reference_url))
     def aggregate_by_title(self, customized_title):
-        new_content = self.aggregate_content(customized_title)
+        new_content = self.squash_content(customized_title, 10)
         self.raw_markdown = new_content
 

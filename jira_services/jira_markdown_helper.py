@@ -15,7 +15,7 @@ class JiraMarkdownHelper:
     def insert_content(self, content, insert_line=-1):
         fragments = self.raw_markdown.split('\n')
         return '\n'.join(fragments[:insert_line] + [content] + fragments[insert_line:])
-    def aggregate_content(self, title, max_size=10):
+    def squash_content(self, title, squash_size=None):
         pattern1 = '^\* .*{}.*'.format(title)
         pattern2 = '^\*\* .*'
         title_presented_index = -1
@@ -25,12 +25,13 @@ class JiraMarkdownHelper:
                 break
             if re.match(pattern1, line):
                 title_presented_index = index
-        if index - title_presented_index > max_size:
+        if squash_size is None or index - title_presented_index > squash_size:
             fragments = self.raw_markdown.split('\n')
+            new_title = fragments[title_presented_index]+ ' **({})**'.format(str(squash_size)+'+' if squash_size else 'squashed') 
             return '\n'.join(
                 fragments[:title_presented_index]+
-                [fragments[title_presented_index] + '(10+)'] +
+                [new_title]+ 
                 fragments[index+1:]
-                )
+            )
         else:
             return self.raw_markdown
