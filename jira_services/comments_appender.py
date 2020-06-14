@@ -42,3 +42,28 @@ def append_change_log(issue_key, change_logs: list):
         last_comment.update(body=raw_markdown)
     else:
         jira.add_comment(issue, '* *{}:*\n'.format(title) + raw_change_logs)
+
+class CommentAppender(JiraMarkdownHelper):
+    def __init__(self, issue_key):
+        self.issue = jira.issue(issue_key)
+        self.last_comment = self.issue.fields.comment.comments[-1]
+        self.raw_markdown = self.last_comment.body
+        #initial super class
+        JiraMarkdownHelper.__init__(self, self.raw_markdown)
+
+    def append_url_references(self, reference_url, customized_title):
+        insert_point = self.get_insert_point(customized_title)
+        if insert_point is not None:
+            raw_markdown = self.insert_content(
+                '** [{url}|{url}]'.format(title=customized_title,url=reference_url),
+                insert_point
+            )
+            self.last_comment.update(body=raw_markdown)
+        else:
+            self.new_url_references(reference_url, customized_title)
+    def new_url_references(self, reference_url, customized_title):
+        jira.add_comment(self.issue, '* *{title}:*\n** [{url}|{url}] '.format(title=customized_title,url=reference_url))
+    def aggregate_by_title(self, customized_title):
+        new_content = self.aggregate_content(customized_title)
+        self.raw_markdown = new_content
+
