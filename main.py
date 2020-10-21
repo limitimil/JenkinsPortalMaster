@@ -57,7 +57,7 @@ def pass_bug_to_black_hole():
     params = request.json
     ca = CommentAppender(params['issue_key'])
     ca.new_comment_with_label('helloworld')
-    jira.issue(params['issue_key']).update(assignee= {'name': 'Zoe Chen'})
+    jira.issue(params['issue_key']).update(assignee= {'accountId': '5bb185bfc9dad04734ea82a1'})
     return 'OK', 200
 
 
