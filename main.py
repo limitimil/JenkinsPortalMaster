@@ -52,6 +52,14 @@ def append_comment_with_link(title):
     append_url_references(** params)
     return 'OK', 200
 
+@app.route('/pass_bug_to_black_hole', methods=['PUT'])
+def pass_bug_to_black_hole():
+    params = request.json
+    ca = CommentAppender(params['issue_key'])
+    ca.new_comment_with_label('helloworld')
+    jira.issue(params['issue_key']).update(assignee= {'name': 'Zoe Chen'})
+    return 'OK', 200
+
 
 @app.errorhandler(Exception)
 def handle_error(e):
