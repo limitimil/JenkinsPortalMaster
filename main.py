@@ -54,10 +54,10 @@ def append_comment_with_link(title):
 
 @app.route('/pass_bug_to_black_hole', methods=['PUT'])
 def pass_bug_to_black_hole():
+    FIX_COMMENT = '請 [~accountid:***] 協助安排議題至適當時機/人員' # TODO: should be refactor
     params = request.json
-    ca = CommentAppender(params['issue_key'])
-    ca.new_comment_with_label('helloworld')
-    jira.issue(params['issue_key']).update(assignee= {'accountId': '5bb185bfc9dad04734ea82a1'})
+    jira.add_comment(params['issue_key'], FIX_COMMENT)
+    jira.issue(params['issue_key']).update(assignee= {'accountId': '***'})
     return 'OK', 200
 
 
