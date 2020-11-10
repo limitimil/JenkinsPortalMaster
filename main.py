@@ -52,6 +52,14 @@ def append_comment_with_link(title):
     append_url_references(** params)
     return 'OK', 200
 
+@app.route('/append/pr_line_up_message', methods=['PUT'])
+def append_pr_line_up_message():
+    params = request.json
+    ca = CommentAppender(params['issue_key'])
+    ca.push_message_to_the_last_comment('line up message')
+    return 'OK', 200
+
+
 @app.route('/pass_bug_to_black_hole', methods=['PUT'])
 def pass_bug_to_black_hole():
     FIX_COMMENT = '請 [~accountid:557058:1f244781-5557-4ab3-937e-d162614eccf2] 協助安排議題至適當時機/人員' # TODO: should be refactor

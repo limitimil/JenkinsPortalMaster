@@ -69,3 +69,6 @@ class CommentAppender(JiraMarkdownHelper):
         new_content = self.squash_content(customized_title, 10)
         self.raw_markdown = new_content
 
+    def push_message_to_the_last_comment(self, message):
+        self.last_comment.update( 
+            body=( self.raw_markdown + message))
