@@ -54,9 +54,16 @@ def append_comment_with_link(title):
 
 @app.route('/append/pr_line_up_message', methods=['PUT'])
 def append_pr_line_up_message():
+    msg = (
+        "\n"
+        "{panel:bgColor=#fffae6}\n"
+        "在 teams 中排隊等待過PR \n"
+        "https://teams.microsoft.com/_?tenantId=9c5df620-ac96-4343-883d-e2fac493dcc0#/conversations/UAT%20PR%20review?groupId=1cee8eb1-7bce-403d-9618-7e57ccf6bab8&threadId=19:32bcf5a38d764e32a44a220f4ac79501@thread.skype&ctx=channel\n"
+        "{panel}\n"
+    )
     params = request.json
     ca = CommentAppender(params['issue_key'])
-    ca.push_message_to_the_last_comment('line up message')
+    ca.push_message_to_the_last_comment(msg)
     return 'OK', 200
 
 
