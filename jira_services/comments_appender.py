@@ -1,5 +1,7 @@
 from jira_services.core import jira
 from jira_services.jira_markdown_helper import JiraMarkdownHelper
+from jira_services.core.issue_grabber import IssueGrabber
+
 def append_url_references(issue_key, reference_url, customized_title):
     issue = jira.issue(issue_key)
     last_comment = issue.fields.comment.comments[-1]
@@ -45,12 +47,7 @@ def append_change_log(issue_key, change_logs: list):
     else:
         jira.add_comment(issue, '* *{}:*\n'.format(title) + raw_change_logs)
 
-class CommentAppender():
-    def __init__(self, issue_key):
-        self.issue = jira.issue(issue_key)
-        self.last_comment = self.issue.fields.comment.comments[-1]
-        self.raw_markdown = self.last_comment.body
-
+class CommentAppender(IssueGrabber):
     def append_url_references(self, reference_url, customized_title):
         jmh = JiraMarkdownHelper(self.raw_markdown)
         insert_point = jmh.get_insert_point(customized_title)
