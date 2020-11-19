@@ -45,18 +45,17 @@ def append_change_log(issue_key, change_logs: list):
     else:
         jira.add_comment(issue, '* *{}:*\n'.format(title) + raw_change_logs)
 
-class CommentAppender(JiraMarkdownHelper):
+class CommentAppender():
     def __init__(self, issue_key):
         self.issue = jira.issue(issue_key)
         self.last_comment = self.issue.fields.comment.comments[-1]
         self.raw_markdown = self.last_comment.body
-        #initial super class
-        JiraMarkdownHelper.__init__(self, self.raw_markdown)
 
     def append_url_references(self, reference_url, customized_title):
-        insert_point = self.get_insert_point(customized_title)
+        jmh = JiraMarkdownHelper(self.raw_markdown)
+        insert_point = jmh.get_insert_point(customized_title)
         if insert_point is not None:
-            raw_markdown = self.insert_content(
+            raw_markdown = jmh.insert_content(
                 '** [{url}|{url}|smart-link]'.format(title=customized_title,url=reference_url),
                 insert_point
             )
@@ -66,7 +65,8 @@ class CommentAppender(JiraMarkdownHelper):
     def new_url_references(self, reference_url, customized_title):
         jira.add_comment(self.issue, '* *{title}:*\n** [{url}|{url}|smart-link] '.format(title=customized_title,url=reference_url))
     def aggregate_by_title(self, customized_title):
-        new_content = self.squash_content(customized_title, 10)
+        jmh = JiraMarkdownHelper(self.raw_markdown)
+        new_content = jmh.squash_content(customized_title, 10)
         self.raw_markdown = new_content
 
     def push_message_to_the_last_comment(self, message):
