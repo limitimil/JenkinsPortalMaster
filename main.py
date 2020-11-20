@@ -12,6 +12,7 @@ import logging
 import logging.config
 
 from jira_services.comments_appender import *
+from jira_services.issue_transition_executor import *
 
 _PATH = os.path.dirname(os.path.abspath(__file__))
 _PATH = os.path.join(_PATH, 'logging.ini')
@@ -66,6 +67,12 @@ def append_pr_line_up_message():
     ca.push_message_to_the_last_comment(msg)
     return 'OK', 200
 
+@app.route('/transition/verification', methods=['PUT'])
+def transit_to_verification():
+    params = request.json
+    ite = IssueTransitionExecutor(params['issue_key'])
+    ite.transit_to_default_verifier()
+    return 'OK', 200
 
 @app.route('/pass_bug_to_black_hole', methods=['PUT'])
 def pass_bug_to_black_hole():
