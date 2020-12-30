@@ -10,7 +10,7 @@ def append_url_references(issue_key, reference_url, customized_title):
     insert_point = jmh.get_insert_point(customized_title)
     if insert_point is not None:
         raw_markdown = jmh.insert_content(
-            '** [{url}|{url}|smart-link]'.format(title=customized_title,url=reference_url),
+            '** [{url}|{url}]'.format(title=customized_title,url=reference_url),
             insert_point
         )
         last_comment.update(body=raw_markdown)
@@ -19,11 +19,11 @@ def append_url_references(issue_key, reference_url, customized_title):
 
 def new_url_references(issue_key, reference_url, customized_title):
     issue = jira.issue(issue_key)
-    jira.add_comment(issue, '* *{title}:*\n** [{url}|{url}|smart-link] '.format(title=customized_title,url=reference_url))
+    jira.add_comment(issue, '* *{title}:*\n** [{url}|{url}] '.format(title=customized_title,url=reference_url))
 
 def append_ci_reference(issue_key, reference_url):
     issue = jira.issue(issue_key)
-    jira.add_comment(issue, '* *CI:*\n** [{url}|{url}|smart-link] '.format(url=reference_url))
+    jira.add_comment(issue, '* *CI:*\n** [{url}|{url}] '.format(url=reference_url))
 
 def append_change_log(issue_key, change_logs: list):
     title = "Change Log"
@@ -53,14 +53,14 @@ class CommentAppender(IssueGrabber):
         insert_point = jmh.get_insert_point(customized_title)
         if insert_point is not None:
             raw_markdown = jmh.insert_content(
-                '** [{url}|{url}|smart-link]'.format(title=customized_title,url=reference_url),
+                '** [{url}|{url}]'.format(title=customized_title,url=reference_url),
                 insert_point
             )
             self.last_comment.update(body=raw_markdown)
         else:
             self.new_url_references(reference_url, customized_title)
     def new_url_references(self, reference_url, customized_title):
-        jira.add_comment(self.issue, '* *{title}:*\n** [{url}|{url}|smart-link] '.format(title=customized_title,url=reference_url))
+        jira.add_comment(self.issue, '* *{title}:*\n** [{url}|{url}] '.format(title=customized_title,url=reference_url))
     def aggregate_by_title(self, customized_title):
         jmh = JiraMarkdownHelper(self.raw_markdown)
         new_content = jmh.squash_content(customized_title, 10)
