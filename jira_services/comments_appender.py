@@ -1,5 +1,7 @@
 from jira_services.core import jira
 from jira_services.jira_markdown_helper import JiraMarkdownHelper
+from jira_services.core.issue_grabber import IssueGrabber
+
 def append_url_references(issue_key, reference_url, customized_title):
     issue = jira.issue(issue_key)
     last_comment = issue.fields.comment.comments[-1]
@@ -8,7 +10,7 @@ def append_url_references(issue_key, reference_url, customized_title):
     insert_point = jmh.get_insert_point(customized_title)
     if insert_point is not None:
         raw_markdown = jmh.insert_content(
-            '** [{url}|{url}|smart-link]'.format(title=customized_title,url=reference_url),
+            '** [{url}|{url}]'.format(title=customized_title,url=reference_url),
             insert_point
         )
         last_comment.update(body=raw_markdown)
@@ -17,11 +19,11 @@ def append_url_references(issue_key, reference_url, customized_title):
 
 def new_url_references(issue_key, reference_url, customized_title):
     issue = jira.issue(issue_key)
-    jira.add_comment(issue, '* *{title}:*\n** [{url}|{url}|smart-link] '.format(title=customized_title,url=reference_url))
+    jira.add_comment(issue, '* *{title}:*\n** [{url}|{url}] '.format(title=customized_title,url=reference_url))
 
 def append_ci_reference(issue_key, reference_url):
     issue = jira.issue(issue_key)
-    jira.add_comment(issue, '* *CI:*\n** [{url}|{url}|smart-link] '.format(url=reference_url))
+    jira.add_comment(issue, '* *CI:*\n** [{url}|{url}] '.format(url=reference_url))
 
 def append_change_log(issue_key, change_logs: list):
     title = "Change Log"
@@ -45,28 +47,23 @@ def append_change_log(issue_key, change_logs: list):
     else:
         jira.add_comment(issue, '* *{}:*\n'.format(title) + raw_change_logs)
 
-class CommentAppender(JiraMarkdownHelper):
-    def __init__(self, issue_key):
-        self.issue = jira.issue(issue_key)
-        self.last_comment = self.issue.fields.comment.comments[-1]
-        self.raw_markdown = self.last_comment.body
-        #initial super class
-        JiraMarkdownHelper.__init__(self, self.raw_markdown)
-
+class CommentAppender(IssueGrabber):
     def append_url_references(self, reference_url, customized_title):
-        insert_point = self.get_insert_point(customized_title)
+        jmh = JiraMarkdownHelper(self.raw_markdown)
+        insert_point = jmh.get_insert_point(customized_title)
         if insert_point is not None:
-            raw_markdown = self.insert_content(
-                '** [{url}|{url}|smart-link]'.format(title=customized_title,url=reference_url),
+            raw_markdown = jmh.insert_content(
+                '** [{url}|{url}]'.format(title=customized_title,url=reference_url),
                 insert_point
             )
             self.last_comment.update(body=raw_markdown)
         else:
             self.new_url_references(reference_url, customized_title)
     def new_url_references(self, reference_url, customized_title):
-        jira.add_comment(self.issue, '* *{title}:*\n** [{url}|{url}|smart-link] '.format(title=customized_title,url=reference_url))
+        jira.add_comment(self.issue, '* *{title}:*\n** [{url}|{url}] '.format(title=customized_title,url=reference_url))
     def aggregate_by_title(self, customized_title):
-        new_content = self.squash_content(customized_title, 10)
+        jmh = JiraMarkdownHelper(self.raw_markdown)
+        new_content = jmh.squash_content(customized_title, 10)
         self.raw_markdown = new_content
 
     def push_message_to_the_last_comment(self, message):
