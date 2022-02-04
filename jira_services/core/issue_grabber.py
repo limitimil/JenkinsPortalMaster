@@ -1,5 +1,4 @@
 from jira_services.core import jira
-import json
 
 class IssueGrabber:
     def __init__(self, issue_key):
