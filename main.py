@@ -82,6 +82,11 @@ def pass_bug_to_black_hole():
     jira.issue(params['issue_key']).update(assignee= {'accountId': '557058:1f244781-5557-4ab3-937e-d162614eccf2'})
     return 'OK', 200
 
+@app.route('/brief/<issue_key>', methods=['GET'])
+def issue_brief(issue_key):
+    ig = IssueGrabber(issue_key)
+    return ig.toJSON()
+
 
 @app.errorhandler(Exception)
 def handle_error(e):
